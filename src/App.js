@@ -1,24 +1,38 @@
-import logo from './logo.svg';
+import Login from "./scenes/login";
+import Register from "./scenes/register";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './App.css';
+import Homepage from "./scenes/homepage";
+import React, { useState } from "react";
 
 function App() {
+
+  const [userInfo, setUserInfo] = useState(null);
+  const authUser = async (info) => {
+    console.log(info);
+    setUserInfo({
+      uid: info.id,
+      first_name: info.first_name,
+      last_name: info.last_name,
+      email: info.email,
+    });
+    sessionStorage.setItem("isAuth", true);
+    sessionStorage.setItem("userId", info.id);
+  }
+  let isAuth = sessionStorage.getItem("isAuth");
+  console.log(isAuth);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+    {/* <Homepage /> */}
+    <Router>
+      <Routes>
+        <Route path="/" element={isAuth ? <Homepage userInfo={userInfo}/> : <Login authUser={authUser}/>} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/home" element={isAuth ? <Homepage userInfo={userInfo}/> : <Login authUser={authUser}/>} />
+      </Routes>
+    </Router>
+
+    </>
   );
 }
 
